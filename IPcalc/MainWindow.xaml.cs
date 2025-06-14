@@ -24,12 +24,14 @@ namespace IPCalculatorWPF
                 else if (first < 192) PrefixBox.Value = 16;
                 else if (first < 224) PrefixBox.Value = 24;
             }
+            UpdateInfo();
         }
 
         private void PrefixBox_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (PrefixBox.Value.HasValue)
                 UpdateMaskFromPrefix(PrefixBox.Value.Value);
+            UpdateInfo();
         }
 
         private void MaskTextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -46,6 +48,7 @@ namespace IPCalculatorWPF
                 }
                 PrefixBox.Value = prefix;
             }
+            UpdateInfo();
         }
 
         private void UpdateMaskFromPrefix(int prefix)
@@ -55,41 +58,77 @@ namespace IPCalculatorWPF
             MaskTextBox.Text = string.Join(".", bytes);
         }
 
+		private void UpdateInfo()
+		{
+			try
+			{
+				if (!IPAddress.TryParse(IpTextBox.Text, out var ip))
+					throw new Exception("Некорректный IP-адрес.");
+
+				if (!IPAddress.TryParse(MaskTextBox.Text, out var mask))
+					throw new Exception("Некорректная маска.");
+
+				var ipBytes = ip.GetAddressBytes();
+				var maskBytes = mask.GetAddressBytes();
+				var networkBytes = new byte[4];
+
+				for (int i = 0; i < 4; i++)
+					networkBytes[i] = (byte)(ipBytes[i] & maskBytes[i]);
+
+				var broadcastBytes = new byte[4];
+				for (int i = 0; i < 4; i++)
+					broadcastBytes[i] = (byte)(ipBytes[i] | ~maskBytes[i]);
+
+				uint totalIps = (uint)Math.Pow(2, 32 - (PrefixBox.Value ?? 24));
+				uint usableIps = totalIps > 2 ? totalIps - 2 : 0;
+
+				InfoTextBlock.Text =
+					$"Адрес сети:\t\t\t{new IPAddress(networkBytes)}\n" +
+					$"Широковещательный адрес:\t{new IPAddress(broadcastBytes)}\n" +
+					$"Количество IP-адресов:\t\t{totalIps}\n" +
+					$"Количество узлов:\t\t{usableIps}";
+			}
+			catch
+			{
+				InfoTextBlock.Text = ""; // очистка при ошибке
+			}
+		}
         private void OnOkClicked(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                if (!IPAddress.TryParse(IpTextBox.Text, out var ip))
-                    throw new Exception("Некорректный IP-адрес.");
+            UpdateInfo();
+            // try
+            //{
+            //    if (!IPAddress.TryParse(IpTextBox.Text, out var ip))
+            //        throw new Exception("Некорректный IP-адрес.");
 
-                if (!IPAddress.TryParse(MaskTextBox.Text, out var mask))
-                    throw new Exception("Некорректная маска.");
+            //    if (!IPAddress.TryParse(MaskTextBox.Text, out var mask))
+            //        throw new Exception("Некорректная маска.");
 
-                var ipBytes = ip.GetAddressBytes();
-                var maskBytes = mask.GetAddressBytes();
-                var networkBytes = new byte[4];
+            //    var ipBytes = ip.GetAddressBytes();
+            //    var maskBytes = mask.GetAddressBytes();
+            //    var networkBytes = new byte[4];
 
-                for (int i = 0; i < 4; i++)
-                    networkBytes[i] = (byte)(ipBytes[i] & maskBytes[i]);
+            //    for (int i = 0; i < 4; i++)
+            //        networkBytes[i] = (byte)(ipBytes[i] & maskBytes[i]);
 
-                var broadcastBytes = new byte[4];
-                for (int i = 0; i < 4; i++)
-                    broadcastBytes[i] = (byte)(ipBytes[i] | ~maskBytes[i]);
+            //    var broadcastBytes = new byte[4];
+            //    for (int i = 0; i < 4; i++)
+            //        broadcastBytes[i] = (byte)(ipBytes[i] | ~maskBytes[i]);
 
-                uint totalIps = (uint)Math.Pow(2, 32 - (PrefixBox.Value ?? 24));
-                uint usableIps = totalIps > 2 ? totalIps - 2 : 0;
+            //    uint totalIps = (uint)Math.Pow(2, 32 - (PrefixBox.Value ?? 24));
+            //    uint usableIps = totalIps > 2 ? totalIps - 2 : 0;
 
-                InfoTextBlock.Text =
-                    $"Адрес сети:\t\t{new IPAddress(networkBytes)}\n" +
-                    $"Широковещательный адрес:\t{new IPAddress(broadcastBytes)}\n" +
-                    $"Количество IP-адресов:\t{totalIps}\n" +
-                    $"Количество узлов:\t\t{usableIps}";
+            //    InfoTextBlock.Text =
+            //        $"Адрес сети:\t\t{new IPAddress(networkBytes)}\n" +
+            //        $"Широковещательный адрес:\t{new IPAddress(broadcastBytes)}\n" +
+            //        $"Количество IP-адресов:\t{totalIps}\n" +
+            //        $"Количество узлов:\t\t{usableIps}";
+            //}
+            //      catch (Exception ex)
+            //      {
+            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                //  }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
 
         private void OnCancelClicked(object sender, RoutedEventArgs e)
         {
