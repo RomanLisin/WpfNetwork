@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Net;  // fo using IPAddress
 
 namespace IPcalc
 {
@@ -24,10 +25,27 @@ namespace IPcalc
 		{
 			InitializeComponent();
 		}
-
+		private void IpChanged(object sender, RoutedEventArgs e)
+		{
+			if (IPAddress.TryParse(IpTextBox.Text, out var ip))
+			{
+				byte first = ip.GetAddressBytes()[0];
+				if (first < 128) Spin.Value = 8;
+				else if (first < 192) Spin.Value = 16;
+				else if (first < 224) Spin.Value = 24;
+			}
+		}
+		private void IpAddressChanged(object sender, RoutedEventArgs e)
+		{
+		
+		}
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
 
         }
+		private void OnCancelClicked(object sender, RoutedEventArgs e)
+		{
+			Close();
+		}
     }
 }

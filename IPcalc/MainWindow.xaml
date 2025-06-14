@@ -22,7 +22,7 @@
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5">
                 <Label Content="IP-адрес:" Width="80"/>
-                <xctk:MaskedTextBox  Margin="5"
+                <xctk:MaskedTextBox  Margin="5" LostFocus="IpChanged"
                      Name="IpTextBox"
                      Mask="###.###.###.###"
                      PromptChar="_"
@@ -37,6 +37,7 @@
                      Width="80"/>
                 <Label Content="Префикс:" Width="80" VerticalAlignment="Center" Margin="15,0,0,0" />
                 <xctk:IntegerUpDown x:Name="Spin" Minimum="0" Maximum="32"
+                                    Value="24"
                                     Width="50"
                                     Height="20"/>
             </StackPanel>
