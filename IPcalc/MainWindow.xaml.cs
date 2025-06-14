@@ -3,15 +3,25 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Windows;
+using System.Runtime.InteropServices;
+using IPcalc;
+using System.Windows.Controls;
 
 namespace IPCalculatorWPF
 {
     public partial class MainWindow : Window
     {
+         private WinApiIpAddressHost ipControl;
         public MainWindow()
-        {
+		{
             InitializeComponent();
-            PrefixBox.Value = 24;
+
+			ipControl = new WinApiIpAddressHost();
+			WindowsFormsHost host = new WindowsFormsHost();
+			host.Child = ipControl;
+			IpHostPlaceholder.Child = host;
+
+			PrefixBox.Value = 24;
             UpdateMaskFromPrefix(24);
         }
 
