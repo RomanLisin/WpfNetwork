@@ -48,9 +48,11 @@ namespace IPCalculatorWPF
                 }
                 PrefixBox.Value = prefix;
             }
+        }
+        private void IpTextBoxChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
             UpdateInfo();
         }
-
         private void UpdateMaskFromPrefix(int prefix)
         {
             uint mask = prefix == 0 ? 0 : uint.MaxValue << (32 - prefix);
