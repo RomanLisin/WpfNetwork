@@ -6,10 +6,9 @@
         xmlns:view="clr-namespace:IPCalculatorWPF.View"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="IP Calculator" Height="330" Width="400">
+        Title="IP Calculator" Height="330" Width="450">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -17,30 +16,34 @@
         </Grid.RowDefinitions>
 
         <view:IpAddressInput x:Name="IpAddressControl" 
-                             Header="IP-Адрес" 
-                             OctetChanged="IpAddress_OctetChanged"/>
+                           Header="IP-Адрес"
+                           OctetChanged="IpAddress_OctetChanged"/>
 
-        <view:IpAddressInput x:Name="SubnetMaskControl" 
-                             Grid.Row="1" 
-                             Header="Маска" 
-                             OctetChanged="SubnetMask_OctetChanged" 
-                             Margin="0,10,0,0"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0">
 
-        <StackPanel Grid.Row="2" 
-                    Orientation="Horizontal" 
-                    HorizontalAlignment="Center" 
-                    Margin="0,10,0,0">
-            <Label Content="Префикс:" 
-                   VerticalAlignment="Center" 
-                   FontWeight="Bold"/>
-            <xctk:IntegerUpDown x:Name="PrefixBox" 
-                                Minimum="0" Maximum="32" 
-                                Width="50" FontSize="12" 
-                                TextAlignment="Center" 
-                                ValueChanged="PrefixBox_ValueChanged"/>
+            <view:IpAddressInput x:Name="SubnetMaskControl" 
+                               Header="Маска"
+                               OctetChanged="SubnetMask_OctetChanged"/>
+
+            <Label Width="20"/>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Label Content="Префикс:" 
+                       VerticalAlignment="Center" 
+                       FontWeight="Bold"
+                       Margin="0,0,5,0"/>
+                <xctk:IntegerUpDown x:Name="PrefixBox" 
+                                  Minimum="0" 
+                                  Maximum="32" 
+                                  Width="50" 
+                                  FontSize="12" 
+                                  TextAlignment="Center" 
+                                  VerticalAlignment="Center"
+                                  ValueChanged="PrefixBox_ValueChanged"/>
+            </StackPanel>
         </StackPanel>
 
-        <TextBox Grid.Row="3" 
+        <TextBox Grid.Row="2" 
                  x:Name="InfoTextBlock" 
                  Margin="0,20,0,0" 
                  TextWrapping="Wrap" 
@@ -48,14 +51,12 @@
                  VerticalContentAlignment="Top" 
                  IsReadOnly="True"/>
 
-        <StackPanel Grid.Row="4" 
+        <StackPanel Grid.Row="3" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right" 
                     Margin="0,10,0,0">
-            <Button Content="Отмена" 
-                    Width="80" 
-                    Margin="0,0,10,0" 
-                    Click="OnCancelClicked"/>
+            <Button Content="OK" Width="80" Margin="0,0,10,0"/>
+            <Button Content="Cancel" Width="80" Click="OnCancelClicked"/>
         </StackPanel>
     </Grid>
 </Window>

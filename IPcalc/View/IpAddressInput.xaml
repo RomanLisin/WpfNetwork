@@ -11,16 +11,16 @@
                VerticalAlignment="Center" 
                FontWeight="Bold" 
                MinWidth="60"/>
-        <TextBox x:Name="FirstOctet" Width="40" MaxLength="3" FontSize="12" 
+        <TextBox x:Name="FirstOctet" Width="40" Height="20" MaxLength="3" FontSize="12" 
                 VerticalContentAlignment="Center" TextAlignment="Center"/>
         <Label Content="." VerticalAlignment="Center"/>
-        <TextBox x:Name="SecondOctet" Width="40" MaxLength="3" FontSize="12" 
+        <TextBox x:Name="SecondOctet" Width="40" Height="20"  MaxLength="3" FontSize="12" 
                 VerticalContentAlignment="Center" TextAlignment="Center"/>
         <Label Content="." VerticalAlignment="Center"/>
-        <TextBox x:Name="ThirdOctet" Width="40" MaxLength="3" FontSize="12" 
+        <TextBox x:Name="ThirdOctet" Width="40" Height="20"  MaxLength="3" FontSize="12" 
                 VerticalContentAlignment="Center" TextAlignment="Center"/>
         <Label Content="." VerticalAlignment="Center"/>
-        <TextBox x:Name="FourthOctet" Width="40" MaxLength="3" FontSize="12" 
+        <TextBox x:Name="FourthOctet" Width="40" Height="20"  MaxLength="3" FontSize="12" 
                 VerticalContentAlignment="Center" TextAlignment="Center"/>
     </StackPanel>
 </UserControl>

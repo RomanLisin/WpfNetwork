@@ -69,20 +69,21 @@ namespace IPCalculatorWPF
 				string ipAddress = IpAddressControl.Address;
 				string subnetMask = SubnetMaskControl.Address;
 
-				if (!IPAddress.TryParse(ipAddress, out var ip))
+				IPAddress ip;
+				if (!IPAddress.TryParse(ipAddress, out ip))
 					throw new Exception("Некорректный IP-адрес.");
-
-				if (!IPAddress.TryParse(subnetMask, out var mask))
+				IPAddress mask;
+				if (!IPAddress.TryParse(subnetMask, out mask))
 					throw new Exception("Некорректная маска.");
 
-				var ipBytes = ip.GetAddressBytes();
-				var maskBytes = mask.GetAddressBytes();
-				var networkBytes = new byte[4];
+				byte[] ipBytes = ip.GetAddressBytes();
+				byte[] maskBytes = mask.GetAddressBytes();
+				byte[] networkBytes = new byte[4];
 
 				for (int i = 0; i < 4; i++)
 					networkBytes[i] = (byte)(ipBytes[i] & maskBytes[i]);
 
-				var broadcastBytes = new byte[4];
+				byte[] broadcastBytes = new byte[4];
 				for (int i = 0; i < 4; i++)
 					broadcastBytes[i] = (byte)(ipBytes[i] | ~maskBytes[i]);
 
