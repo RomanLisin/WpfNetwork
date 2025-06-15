@@ -12,46 +12,28 @@ namespace IPCalculatorWPF
 		public MainWindow()
 		{
 			InitializeComponent();
-			PrefixBox.Value = 24;
-			UpdateMaskFromPrefix(24);
+			IpAddressControl.SetZeroValues();
+			PrefixBox.Value = 8;
+			UpdateMaskFromPrefix(8);
 		}
 
-		private string GetIpAddress()
+		private void IpAddress_OctetChanged(object sender, TextChangedEventArgs e)
 		{
-			return $"{FirstOctet.Text}.{SecondOctet.Text}.{ThirdOctet.Text}.{FourthOctet.Text}";
-		}
-
-		private string GetSubnetMask()
-		{
-			return $"{MaskFirstOctet.Text}.{MaskSecondOctet.Text}.{MaskThirdOctet.Text}.{MaskFourthOctet.Text}";
-		}
-
-		private void Octet_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			TextBox textBox = (TextBox)sender;
-			if (textBox.Text.Length == textBox.MaxLength && textBox.Text.All(char.IsDigit))
-			{
-				MoveToNextOctet(textBox);
-			}
-
-			IPAddress ip;
-			if (IPAddress.TryParse(GetIpAddress(), out ip))
+			if (IPAddress.TryParse(IpAddressControl.Address, out var ip))
 			{
 				byte first = ip.GetAddressBytes()[0];
 				if (first < 128) PrefixBox.Value = 8;
 				else if (first < 192) PrefixBox.Value = 16;
 				else if (first < 224) PrefixBox.Value = 24;
 			}
-
 			UpdateInfo();
 		}
 
-		private void MaskOctet_TextChanged(object sender, TextChangedEventArgs e)
+		private void SubnetMask_OctetChanged(object sender, TextChangedEventArgs e)
 		{
-			IPAddress mask;
-			if (IPAddress.TryParse(GetSubnetMask(), out mask))
+			if (IPAddress.TryParse(SubnetMaskControl.Address, out var mask))
 			{
-				byte[] bytes = mask.GetAddressBytes();
+				var bytes = mask.GetAddressBytes();
 				uint m = BitConverter.ToUInt32(bytes.Reverse().ToArray(), 0);
 				int prefix = 0;
 				while ((m & 0x80000000) != 0)
@@ -61,15 +43,7 @@ namespace IPCalculatorWPF
 				}
 				PrefixBox.Value = prefix;
 			}
-
 			UpdateInfo();
-		}
-
-		private void MoveToNextOctet(TextBox currentTextBox)
-		{
-			if (currentTextBox == FirstOctet) SecondOctet.Focus();
-			else if (currentTextBox == SecondOctet) ThirdOctet.Focus();
-			else if (currentTextBox == ThirdOctet) FourthOctet.Focus();
 		}
 
 		private void PrefixBox_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -84,36 +58,31 @@ namespace IPCalculatorWPF
 		private void UpdateMaskFromPrefix(int prefix)
 		{
 			uint mask = prefix == 0 ? 0 : uint.MaxValue << (32 - prefix);
-			byte[] bytes = BitConverter.GetBytes(mask).Reverse().ToArray();
-			MaskFirstOctet.Text = bytes[0].ToString();
-			MaskSecondOctet.Text = bytes[1].ToString();
-			MaskThirdOctet.Text = bytes[2].ToString();
-			MaskFourthOctet.Text = bytes[3].ToString();
+			var bytes = BitConverter.GetBytes(mask).Reverse().ToArray();
+			SubnetMaskControl.Address = string.Join(".", bytes);
 		}
 
 		private void UpdateInfo()
 		{
 			try
 			{
-				string ipAddress = GetIpAddress();
-				string subnetMask = GetSubnetMask();
+				string ipAddress = IpAddressControl.Address;
+				string subnetMask = SubnetMaskControl.Address;
 
-				IPAddress ip;
-				if (!IPAddress.TryParse(ipAddress, out ip))
+				if (!IPAddress.TryParse(ipAddress, out var ip))
 					throw new Exception("Некорректный IP-адрес.");
 
-				IPAddress mask;
-				if (!IPAddress.TryParse(subnetMask, out mask))
+				if (!IPAddress.TryParse(subnetMask, out var mask))
 					throw new Exception("Некорректная маска.");
 
-				byte[] ipBytes = ip.GetAddressBytes();
-				byte[] maskBytes = mask.GetAddressBytes();
-				byte[] networkBytes = new byte[4];
+				var ipBytes = ip.GetAddressBytes();
+				var maskBytes = mask.GetAddressBytes();
+				var networkBytes = new byte[4];
 
 				for (int i = 0; i < 4; i++)
 					networkBytes[i] = (byte)(ipBytes[i] & maskBytes[i]);
 
-				byte[] broadcastBytes = new byte[4];
+				var broadcastBytes = new byte[4];
 				for (int i = 0; i < 4; i++)
 					broadcastBytes[i] = (byte)(ipBytes[i] | ~maskBytes[i]);
 
@@ -126,9 +95,9 @@ namespace IPCalculatorWPF
 					$"Количество IP-адресов:\t\t{totalIps}\n" +
 					$"Количество узлов:\t\t{usableIps}";
 			}
-			catch
+			catch (Exception ex)
 			{
-				InfoTextBlock.Text = ""; // очистка при ошибке
+				InfoTextBlock.Text = $"Ошибка: {ex.Message}";
 			}
 		}
 
