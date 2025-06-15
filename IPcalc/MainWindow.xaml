@@ -1,10 +1,14 @@
 ﻿<Window x:Class="IPCalculatorWPF.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Калькулятор IP-адресов" Height="300" Width="400">
+        mc:Ignorable="d"
+        Title="IP Calculator" Height="330" Width="450">
     <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -12,28 +16,38 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Margin="0,5">
-            <Label Content="IP-адрес:" Width="80"/>
-            <TextBox x:Name="IpTextBox" 
-                     Width="150" 
-                     LostFocus="OnIpAddressChanged"
-                     TextChanged="IpTextBoxChanged"/>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Label Content="IP-Адрес" VerticalAlignment="Center" FontWeight="Bold"/>
+            <TextBox x:Name="FirstOctet" Width="40" MaxLength="3" FontSize="12" VerticalContentAlignment="Center" TextAlignment="Center" TextChanged="Octet_TextChanged"/>
+            <Label Content="." VerticalAlignment="Center"/>
+            <TextBox x:Name="SecondOctet" Width="40" MaxLength="3" FontSize="12" VerticalContentAlignment="Center" TextAlignment="Center" TextChanged="Octet_TextChanged"/>
+            <Label Content="." VerticalAlignment="Center"/>
+            <TextBox x:Name="ThirdOctet" Width="40" MaxLength="3" FontSize="12" VerticalContentAlignment="Center" TextAlignment="Center" TextChanged="Octet_TextChanged"/>
+            <Label Content="." VerticalAlignment="Center"/>
+            <TextBox x:Name="FourthOctet" Width="40" MaxLength="3" FontSize="12" VerticalContentAlignment="Center" TextAlignment="Center" TextChanged="Octet_TextChanged"/>
+            <Label Width="50"/>
+            <Label Width="90"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Margin="0,5" Grid.Row="1">
-            <Label Content="Маска:" Width="80"/>
-            <TextBox x:Name="MaskTextBox" Width="150" LostFocus="MaskTextBox_LostFocus"/>
-            <Label Content="Префикс:" Margin="10,0"/>
-            <xctk:IntegerUpDown x:Name="PrefixBox" Minimum="1" Maximum="30"
-                                ValueChanged="PrefixBox_ValueChanged"
-                                Width="50"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Label Content="Macka" VerticalAlignment="Center" FontWeight="Bold"/>
+            <TextBox x:Name="MaskFirstOctet" Width="40" MaxLength="3" FontSize="12" VerticalContentAlignment="Center" TextAlignment="Center" TextChanged="MaskOctet_TextChanged"/>
+            <Label Content="." VerticalAlignment="Center"/>
+            <TextBox x:Name="MaskSecondOctet" Width="40" MaxLength="3" FontSize="12" VerticalContentAlignment="Center" TextAlignment="Center" TextChanged="MaskOctet_TextChanged"/>
+            <Label Content="." VerticalAlignment="Center"/>
+            <TextBox x:Name="MaskThirdOctet" Width="40" MaxLength="3" FontSize="12" VerticalContentAlignment="Center" TextAlignment="Center" TextChanged="MaskOctet_TextChanged"/>
+            <Label Content="." VerticalAlignment="Center"/>
+            <TextBox x:Name="MaskFourthOctet" Width="40" MaxLength="3" FontSize="12" VerticalContentAlignment="Center" TextAlignment="Center" TextChanged="MaskOctet_TextChanged"/>
+            <Label Width="30" VerticalAlignment="Center"/>
+            <Label Content="Prefix:" VerticalAlignment="Center" FontWeight="Bold"/>
+            <xctk:IntegerUpDown x:Name="PrefixBox" Minimum="0" Maximum="32" Width="50" FontSize="12" TextAlignment="Center" ValueChanged="PrefixBox_ValueChanged"/>
         </StackPanel>
 
-        <TextBlock x:Name="InfoTextBlock" Grid.Row="2" Margin="0,10" TextWrapping="Wrap"/>
+        <TextBox Grid.Row="3" x:Name="InfoTextBlock" Margin="0,20,0,0" Height="150" FontSize="12" TextWrapping="Wrap" 
+                 VerticalScrollBarVisibility="Auto"  IsReadOnly="True"/>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <Button Content="OK" Width="75" Margin="5" Click="OnOkClicked"/>
-            <Button Content="Cancel" Width="75" Margin="5" Click="OnCancelClicked"/>
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Cancel" Width="80" Margin="0,0,10,0" Click="OnCancelClicked"/>
         </StackPanel>
     </Grid>
 </Window>
