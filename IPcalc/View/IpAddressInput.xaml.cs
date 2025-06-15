@@ -11,7 +11,7 @@ namespace IPCalculatorWPF.View
 	public partial class IpAddressInput : UserControl
 	{
 		public static readonly DependencyProperty HeaderProperty =
-			DependencyProperty.Register("Header", typeof(string), typeof(IpAddressInput), new PropertyMetadata(""));
+			DependencyProperty.Register("Header", typeof(string), typeof(IpAddressInput), new PropertyMetadata("IP Address"));
 
 		public string Header
 		{
